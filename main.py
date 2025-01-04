@@ -1,5 +1,3 @@
-from email.headerregistry import Address
-
 import sv_ttk
 import tkinter as tkr
 import tkinter.ttk as tkrtk
