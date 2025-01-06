@@ -9,6 +9,7 @@ import psycopg2
 
 
 class PayrollManagementSystem:
+    
     def __init__(self, root):
         self.root = root
         self.root.title("Payroll Management System")
@@ -51,6 +52,33 @@ class PayrollManagementSystem:
         BasicSalary.set(0)
 
 
+############################################## Functionalities of the Payroll Management System###############################################################################################
+
+####################################### calculator Functions ##########################################
+
+        def btnClick(numbers):
+            global operator
+            operator = operator + str(numbers)
+            text_Input.set(operator)
+
+        def clear():
+            global operator
+            operator = ""
+            text_Input.set("0")
+
+        def equal():
+            global operator
+            if operator != "0" or operator != "":
+                operator = str(eval(operator))
+                text_Input.set(operator)
+            else:
+                operator = "0"
+                text_Input.set(operator)
+
+
+################################# data base connection ###############################################
+
+
 ########################################### Frame Structure ###########################################
 
 ########################################### Tab Controls ###########################################
@@ -64,7 +92,7 @@ class PayrollManagementSystem:
         notebook.add(self.TabControl3, text="Notes")
         notebook.grid()
 
-
+########################################### First Tab payroll management ui ###########################################
 
         Tab1Frame = Frame(self.TabControl1, bd=10,width=1350, height=700, relief=RIDGE)
         Tab1Frame.grid()
@@ -260,42 +288,42 @@ class PayrollManagementSystem:
         self.txtDeductions = Entry(LeftFrame3Right,textvariable=Deductions,font=("Arial",12,"bold"),bd=5,width=23,state=DISABLED,justify=LEFT)
         self.txtDeductions.grid(row=3,column=1,sticky=W)
 
-#####################################Calculator ######################################################
+#####################################Calculator ##############################################################
 
         self.txtDisplay = Entry(RightFrame1a,textvariable=text_Input,font=("Arial",18,"bold"),bd=10,insertwidth=4,justify=RIGHT)
         self.txtDisplay.grid(row=0,column=0,columnspan=4,pady=16)
 
-        self.btnDigit7 = Button(RightFrame1a,padx=6,pady=7,bd=2,font=('arial',16,'bold'),width=4,text="7").grid(row=1,column=0)
-        self.btnDigit8 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="8").grid(
+        self.btnDigit7 = Button(RightFrame1a,padx=6,pady=7,bd=2,font=('arial',16,'bold'),width=4,text="7",command=lambda:btnClick(7)).grid(row=1,column=0)
+        self.btnDigit8 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="8",command=lambda:btnClick(8)).grid(
             row=1, column=1)
-        self.btnDigit9 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="9").grid(
+        self.btnDigit9 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="9",command=lambda:btnClick(9)).grid(
             row=1, column=2)
-        self.btnAdd = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="+").grid(
+        self.btnAdd = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="+",command=lambda:btnClick("+")).grid(
             row=1, column=3)
 
-        self.btnDigit4 = Button(RightFrame1a,padx=6,pady=7,bd=2,font=('arial',16,'bold'),width=4,text="4").grid(row=2,column=0)
-        self.btnDigit5 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="5").grid(
+        self.btnDigit4 = Button(RightFrame1a,padx=6,pady=7,bd=2,font=('arial',16,'bold'),width=4,text="4",command=lambda:btnClick(4)).grid(row=2,column=0)
+        self.btnDigit5 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="5",command=lambda:btnClick(5)).grid(
             row=2, column=1)
-        self.btnDigit6 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="6").grid(
+        self.btnDigit6 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="6",command=lambda:btnClick(6)).grid(
             row=2, column=2)
-        self.btnSub = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="-").grid(
+        self.btnSub = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="-",command=lambda:btnClick("-")).grid(
             row=2, column=3)
 
-        self.btnDigit1 = Button(RightFrame1a,padx=6,pady=7,bd=2,font=('arial',16,'bold'),width=4,text="1").grid(row=3,column=0)
-        self.btnDigit2 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="2").grid(
+        self.btnDigit1 = Button(RightFrame1a,padx=6,pady=7,bd=2,font=('arial',16,'bold'),width=4,text="1",command=lambda:btnClick(1)).grid(row=3,column=0)
+        self.btnDigit2 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="2",command=lambda:btnClick(2)).grid(
             row=3, column=1)
-        self.btnDigit3 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="3").grid(
+        self.btnDigit3 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="3",command=lambda:btnClick(3)).grid(
             row=3, column=2)
-        self.btnMulti = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="*").grid(
+        self.btnMulti = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="*",command=lambda:btnClick("*")).grid(
             row=3, column=3)
 
-        self.btnDigit0 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="0").grid(
+        self.btnDigit0 = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="0",command=lambda:btnClick(0)).grid(
             row=4, column=0)
-        self.btnClean = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="C").grid(
+        self.btnClean = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="C",command=clear).grid(
             row=4, column=1)
-        self.btnEqual = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="=").grid(
+        self.btnEqual = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="=",command=equal).grid(
             row=4, column=2)
-        self.btnDivide = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="/").grid(
+        self.btnDivide = Button(RightFrame1a, padx=6, pady=7, bd=2, font=('arial', 16, 'bold'), width=4, text="/",command=lambda:btnClick("/")).grid(
             row=4, column=3)
 
 ################################################### Functions Buttons #############################################################
@@ -313,6 +341,83 @@ class PayrollManagementSystem:
         row=1, column=2)
 
 
+#########################################################################################################################################
+
+#################################################### Second tab Treeview UI #############################################################
+        TopFrame11 = Frame(Tab2Frame,bd=10,width=1340,height=100,relief=RIDGE)
+        TopFrame11.grid(row=0,column=0)
+        TopFrame12 = Frame(Tab2Frame,bd=10,width=1340,height=100,relief=RIDGE)
+        TopFrame12.grid(row=1,column=0)
+###############################################################################################################################
+        self.lblTitle = Label(TopFrame11,text="Payroll Management System ",font=("Arial",20,"bold"),bd=10,justify=CENTER)
+        self.lblTitle.grid(padx=72)
+        scroll_x = Scrollbar(TopFrame12,orient=HORIZONTAL)
+        scroll_y = Scrollbar(TopFrame12,orient=VERTICAL)
+        self.PMS_Table = ttk.Treeview(TopFrame12,height=22,columns=("ref","fullname","address","cityweighting","basicsalary","overtime","grosspay","tax","pension","nipayment","deductions","postcode","gender","payday","taxperiod","taxcode","ninumber","netpay"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        scroll_x.pack(side=BOTTOM,fill=X)
+        scroll_y.pack(side=RIGHT,fill=Y)
+        # scroll_x.config(command=self.PMS_Table.xview)
+        # scroll_y.config(command=self.PMS_Table.yview)
+        self.PMS_Table.heading("ref",text="Ref")
+        self.PMS_Table.heading("fullname",text="Name")
+        self.PMS_Table.heading("address",text="Address")
+        self.PMS_Table.heading("cityweighting",text="City Weighting")
+        self.PMS_Table.heading("basicsalary",text="Basic Salary")
+        self.PMS_Table.heading("overtime",text="Overtime")
+        self.PMS_Table.heading("grosspay",text="Gross Pay")
+        self.PMS_Table.heading("tax",text="Tax")
+        self.PMS_Table.heading("pension",text="Pension")
+        self.PMS_Table.heading("nipayment",text="NI Payment")
+        self.PMS_Table.heading("deductions",text="Deductions")
+        self.PMS_Table.heading("postcode",text="Postcode")
+        self.PMS_Table.heading("gender",text="Gender")
+        self.PMS_Table.heading("payday",text="Pay Day")
+        self.PMS_Table.heading("taxperiod",text="Tax Period")
+        self.PMS_Table.heading("taxcode",text="Tax Code")
+        self.PMS_Table.heading("ninumber",text="NI Number")
+        self.PMS_Table.heading("netpay",text="Net Pay")
+
+        self.PMS_Table['show'] = 'headings'
+        self.PMS_Table.column("ref",width=70)
+        self.PMS_Table.column("fullname",width=70)
+        self.PMS_Table.column("address",width=120)
+        self.PMS_Table.column("cityweighting",width=70)
+        self.PMS_Table.column("basicsalary",width=70)
+        self.PMS_Table.column("overtime",width=70)
+        self.PMS_Table.column("grosspay",width=70)
+        self.PMS_Table.column("tax",width=70)
+        self.PMS_Table.column("pension",width=70)
+        self.PMS_Table.column("nipayment",width=70)
+        self.PMS_Table.column("deductions",width=70)
+        self.PMS_Table.column("postcode",width=70)
+        self.PMS_Table.column("gender",width=70)
+        self.PMS_Table.column("payday",width=70)
+        self.PMS_Table.column("taxperiod",width=70)
+        self.PMS_Table.column("taxcode",width=70)
+        self.PMS_Table.column("ninumber",width=70)
+        self.PMS_Table.column("netpay",width=70)
+        self.PMS_Table.pack(fill=BOTH,expand=1)
+        self.PMS_Table.bind("<ButtonRelease-1>")
+
+
+#####################################################################################################################################################
+
+##################################################################Third Tab Note Pad UI ###############################################################
+        TopFrame13 = Frame(Tab3Frame,bd=10,width=1340,height=100,relief=RIDGE)
+        TopFrame13.grid(row=0,column=0)
+###############################################################################################################################
+        self.lblNote = Label(TopFrame13, text="Payroll Note Book ", font=("Arial", 40, "bold"), bd=10,
+                              justify=CENTER)
+        self.lblNote.grid(padx=72)
+
+###############################################################################################################################
+        self.txtNote = Text(TopFrame13,bd=10,width=163,height=30,font=("Arial",14,"bold"),relief=RIDGE)
+        self.txtNote.grid(row=1,column=0)
+
+
+######################################################################################################################################################
+
+################################### PayrollManagementSystem Class Ends Here ########################################################################################
 
 if __name__ == '__main__':
     root = Tk()
