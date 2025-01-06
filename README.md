@@ -8,6 +8,7 @@ This is a payroll management system that allows you to manage your payroll. It h
     
 1. first you need to setup a  postgresql database.
 2. you have to create a database called "payroll".
+3. Change the database connection parameters in the code to connect to your database. (ex: database="payroll", user="", password="", host="localhost", port="5432")
 3. you have to create a table called "payment" use the following command:
 
 ```
