@@ -1,3 +1,6 @@
+import random
+import time
+
 import sv_ttk
 import tkinter as tkr
 import tkinter.ttk as tkrtk
@@ -23,8 +26,8 @@ class PayrollManagementSystem:
         Address =StringVar()
         Reference = StringVar()
         EmployerName = StringVar()
-        CityWeighting = IntVar()
-        BasicSalary = IntVar()
+        CityWeighting = StringVar()
+        BasicSalary = StringVar()
         OverTime = StringVar()
         OtherPaymentDue = StringVar()
         GrossPay = StringVar()
@@ -48,8 +51,8 @@ class PayrollManagementSystem:
         global operator
         operator = ""
 
-        CityWeighting.set(0)
-        BasicSalary.set(0)
+        CityWeighting.set("")
+        BasicSalary.set("")
 
 
 ############################################## Functionalities of the Payroll Management System###############################################################################################
@@ -74,10 +77,220 @@ class PayrollManagementSystem:
             else:
                 operator = "0"
                 text_Input.set(operator)
+#################################### Action Buttons ###########################################
+
+        def iExit():
+            iExit = tkinter.messagebox.askyesno("Payroll Management System", "Confirm if you want to exit")
+            if iExit > 0:
+                root.destroy()
+                return
+        def Reset():
+            EmployeeName.set("")
+            Address.set("")
+            Reference.set("")
+            EmployerName.set("")
+            CityWeighting.set("")
+            BasicSalary.set("")
+            OverTime.set("")
+            OtherPaymentDue.set("")
+            GrossPay.set("")
+            Tax.set("")
+            Pension.set("")
+            StudentLoan.set("")
+            NIPayment.set("")
+            Deductions.set("")
+            PostCode.set("")
+            Gender.set("")
+            Payday.set("")
+            TaxPeriod.set("")
+            TaxCode.set("")
+            NINumber.set("")
+            NICode.set("")
+            TaxablePay.set("")
+            PensionablePay.set("")
+            NetPay.set("")
+
+#################################### Pay Functions ###############################################
+
+        def PayRef():
+            Payday.set(time.strftime("%Y-%m-%d"))
+            Refpay = random.randint(15000, 909878)
+            Refpaid = ("PR" + str(Refpay))
+            Reference.set(Refpaid)
+
+            NIpay = random.randint(15000, 909878)
+            NInumber = ("NI" + str(NIpay))
+            NINumber.set(NInumber)
+
+            iTaxCode = random.randint(15000, 909878)
+            iTaxCoded = ("TCode" + str(iTaxCode))
+            TaxCode.set(iTaxCoded)
+
+            NICodepay = random.randint(15000, 909878)
+            NICoded = ("NIC" + str(NICodepay))
+            NICode.set(NICoded)
+
+            iDate = datetime.datetime.now()
+            TaxPeriodpay = iDate.month
+            TaxPeriod.set(str(TaxPeriodpay))
+
+        def Payment():
+            PayRef()
+            BS = float(BasicSalary.get())
+            OT = float(OverTime.get())
+            CW = float(CityWeighting.get())
+
+            MTax = ((BS + OT + CW)*0.3)
+            TTax = str('$%.2f' % (MTax))
+            Tax.set(TTax)
+
+            MPension = ((BS + OT + CW)*0.1)
+            TPension = str('$%.2f' % (MPension))
+            Pension.set(TPension)
+
+            MSLoan = ((BS + OT + CW)*0.05)
+            TLoan = str('$%.2f' % (MSLoan))
+            StudentLoan.set(TLoan)
+
+            MNIPayment = ((BS + OT + CW)*0.05)
+            TNIPayment = str('$%.2f' % (MNIPayment))
+            NIPayment.set(TNIPayment)
 
 
-################################# data base connection ###############################################
+            MDeductions = (MTax + MPension + MSLoan + MNIPayment)
+            TDeductions = str('$%.2f' % (MDeductions))
+            Deductions.set(TDeductions)
 
+            MNetPay = (BS + OT + CW) - (MDeductions)
+            TNetPay = str('$%.2f' % (MNetPay))
+            NetPay.set(TNetPay)
+
+            MGrossPay = (BS + OT + CW)
+            TGrossPay = str('$%.2f' % (MGrossPay))
+            GrossPay.set(TGrossPay)
+
+
+            TaxablePay.set(TTax)
+            PensionablePay.set(TPension)
+            OtherPaymentDue.set("$0.00")
+
+
+################################# data base  connection ###################################################################
+
+################################# data add   ###################################################################
+
+        def AddData():
+            if EmployeeName.get() == "" or Address.get() == "" or EmployerName.get() == "" or CityWeighting.get() == "" or BasicSalary.get() == "":
+                tkinter.messagebox.showinfo("Payroll Management System", "Please complete the required field")
+            else:
+                conn = psycopg2.connect(database="payroll", user="", password="", host="localhost", port="5432")
+                cur = conn.cursor()
+                cur.execute("insert into payment values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (
+                    Reference.get(),
+                    EmployeeName.get(),
+                    Address.get(),
+                    EmployerName.get(),
+                    CityWeighting.get(),
+                    BasicSalary.get(),
+                    OverTime.get(),
+                    GrossPay.get(),
+                    Tax.get(),
+                    Pension.get(),
+                    NIPayment.get(),
+                    Deductions.get(),
+                    PostCode.get(),
+                    Gender.get(),
+                    Payday.get(),
+                    TaxPeriod.get(),
+                    TaxCode.get(),
+                    NINumber.get(),
+                    NetPay.get(),
+                ))
+                conn.commit()
+                DisplayData()
+                conn.close()
+                tkinter.messagebox.showinfo("Payroll Management System", "Record has been successfully saved")
+
+################################# display data  ###################################################################
+
+        def DisplayData():
+            conn = psycopg2.connect(database="payroll", user="", password="", host="localhost", port="5432")
+            cur = conn.cursor()
+            cur.execute("select * from payment")
+            rows = cur.fetchall()
+            if len(rows) != 0:
+                self.PMS_Table.delete(*self.PMS_Table.get_children())
+                for i in rows:
+                    self.PMS_Table.insert("", END, values=i)
+                conn.commit()
+            conn.close()
+
+        def WagesInfo(ev):
+            viewinfo = self.PMS_Table.focus()
+            info = self.PMS_Table.item(viewinfo)
+            row = info["values"]
+            Reference.set(row[0])
+            EmployeeName.set(row[1])
+            Address.set(row[2])
+            EmployerName.set(row[3])
+            CityWeighting.set(row[4])
+            BasicSalary.set(row[5])
+            OverTime.set(row[6])
+            GrossPay.set(row[7])
+            Tax.set(row[8])
+            Pension.set(row[9])
+            NIPayment.set(row[10])
+            Deductions.set(row[11])
+            PostCode.set(row[12])
+            Gender.set(row[13])
+            Payday.set(row[14])
+            TaxPeriod.set(row[15])
+            TaxCode.set(row[16])
+            NINumber.set(row[17])
+            NetPay.set(row[18])
+
+################################# data delete   ###################################################################
+
+################################# data update   ###################################################################
+        def UpdateData():
+            conn = psycopg2.connect(database="payroll", user="", password="", host="localhost", port="5432")
+            cur = conn.cursor()
+            cur.execute(
+                "update payment set fullname=%s,address=%s,employername=%s,cityweighting=%s,basicsalary=%s,overtime=%s,grosspay=%s,tax=%s,pension=%s,nipayment=%s,deductions=%s,postcode=%s,gender=%s, payday=%s, taxperiod=%s, ninumber=%s, netpay=%s where ref=%s",(
+                    EmployeeName.get(),
+                    Address.get(),
+                    EmployerName.get(),
+                    CityWeighting.get(),
+                    BasicSalary.get(),
+                    OverTime.get(),
+                    GrossPay.get(),
+                    Tax.get(),
+                    Pension.get(),
+                    NIPayment.get(),
+                    Deductions.get(),
+                    PostCode.get(),
+                    Gender.get(),
+                    Payday.get(),
+                    TaxPeriod.get(),
+                    NINumber.get(),
+                    NetPay.get(),
+                    Reference.get()
+                ))
+            conn.commit()
+            DisplayData()
+            conn.close()
+            tkinter.messagebox.showinfo("Payroll Management System", "Record has been successfully updated")
+
+################################# data delete   ###################################################################
+
+        def DeleteData():
+            conn = psycopg2.connect(database="payroll", user="", password="", host="localhost", port="5432")
+            cur = conn.cursor()
+            cur.execute("delete from payment where ref=%s", (Reference.get(),))
+            conn.commit()
+            DisplayData()
+            conn.close()
+            tkinter.messagebox.showinfo("Payroll Management System", "Record has been successfully deleted")
 
 ########################################### Frame Structure ###########################################
 
@@ -226,7 +439,7 @@ class PayrollManagementSystem:
 
         self.lblEmployerName = Label(LeftFrame1,text="Employer Name",font=("Arial",12,"bold"),bd=10,padx=20,justify=CENTER)
         self.lblEmployerName.grid(row=1,column=0,sticky=W)
-        self.txtEmployerName = Entry(LeftFrame1,textvariable=EmployerName,font=("Arial",12,"bold"),bd=5,width=62,state=DISABLED,justify=LEFT)
+        self.txtEmployerName = Entry(LeftFrame1,textvariable=EmployerName,font=("Arial",12,"bold"),bd=5,width=62,justify=LEFT)
         self.txtEmployerName.grid(row=1,column=1,sticky=W)
 
         self.lblEmployeeName = Label(LeftFrame1,text="Employee Name",font=("Arial",12,"bold"),bd=10,padx=20,justify=CENTER)
@@ -237,23 +450,23 @@ class PayrollManagementSystem:
 
         self.lblCityWeighting = Label(LeftFrame2Left,text="City Weighting",font=("Arial",12,"bold"),bd=10,justify=CENTER)
         self.lblCityWeighting.grid(row=0,column=0,sticky=W)
-        self.txtCityWeighting = Entry(LeftFrame2Left,textvariable=CityWeighting,font=("Arial",12,"bold"),bd=5,width=20,state=DISABLED,justify=LEFT)
+        self.txtCityWeighting = Entry(LeftFrame2Left,textvariable=CityWeighting,font=("Arial",12,"bold"),bd=5,width=20,justify=LEFT)
         self.txtCityWeighting.grid(row=0,column=1,sticky=W)
 
 
         self.lblBasicSalary = Label(LeftFrame2Left,text="Basic Salary",font=("Arial",12,"bold"),bd=10,justify=CENTER)
         self.lblBasicSalary.grid(row=1,column=0,sticky=W)
-        self.txtBasicSalary = Entry(LeftFrame2Left,textvariable=BasicSalary,font=("Arial",12,"bold"),bd=5,width=20,state=DISABLED,justify=LEFT)
+        self.txtBasicSalary = Entry(LeftFrame2Left,textvariable=BasicSalary,font=("Arial",12,"bold"),bd=5,width=20,justify=LEFT)
         self.txtBasicSalary.grid(row=1,column=1,sticky=W)
 
         self.lblOverTime = Label(LeftFrame2Left,text="Over Time",font=("Arial",12,"bold"),bd=10,justify=CENTER)
         self.lblOverTime.grid(row=2,column=0,sticky=W)
-        self.txtOverTime = Entry(LeftFrame2Left,textvariable=OverTime,font=("Arial",12,"bold"),bd=5,width=20,state=DISABLED,justify=LEFT)
+        self.txtOverTime = Entry(LeftFrame2Left,textvariable=OverTime,font=("Arial",12,"bold"),bd=5,width=20,justify=LEFT)
         self.txtOverTime.grid(row=2,column=1,sticky=W)
 
         self.lblOtherPaymentDue = Label(LeftFrame2Left,text="Other Payment Due",font=("Arial",12,"bold"),bd=10,justify=CENTER)
         self.lblOtherPaymentDue.grid(row=3,column=0,sticky=W)
-        self.txtOtherPaymentDue = Entry(LeftFrame2Left,textvariable=OtherPaymentDue,font=("Arial",12,"bold"),bd=5,width=20,state=DISABLED,justify=LEFT)
+        self.txtOtherPaymentDue = Entry(LeftFrame2Left,textvariable=OtherPaymentDue,font=("Arial",12,"bold"),bd=5,width=20,justify=LEFT)
         self.txtOtherPaymentDue.grid(row=3,column=1,sticky=W)
 ###############################################################################################################################################################
         self.lblTax = Label(LeftFrame2Right,text="Tax",font=("Arial",12,"bold"),bd=10,justify=CENTER)
@@ -327,17 +540,17 @@ class PayrollManagementSystem:
             row=4, column=3)
 
 ################################################### Functions Buttons #############################################################
-        self.btnWages = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Wages").grid(
+        self.btnWages = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Wages",command=Payment).grid(
         row=0, column=0)
-        self.btnDisplay = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Display").grid(
+        self.btnDisplay = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Display",command=AddData).grid(
         row=0, column=1)
-        self.btnUpdate = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Update").grid(
+        self.btnUpdate = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Update",command=UpdateData).grid(
         row=0, column=2)
-        self.btnDelete = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Delete").grid(
+        self.btnDelete = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Delete",command=DeleteData).grid(
         row=1, column=0)
-        self.btnReset = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Reset").grid(
+        self.btnReset = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Reset",command=Reset).grid(
         row=1, column=1)
-        self.btnExit = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Exit").grid(
+        self.btnExit = Button(RightFrame1b, padx=16, pady=5, bd=5, font=('arial', 16, 'bold'), width=4, text="Exit",command=iExit).grid(
         row=1, column=2)
 
 
@@ -353,7 +566,7 @@ class PayrollManagementSystem:
         self.lblTitle.grid(padx=72)
         scroll_x = Scrollbar(TopFrame12,orient=HORIZONTAL)
         scroll_y = Scrollbar(TopFrame12,orient=VERTICAL)
-        self.PMS_Table = ttk.Treeview(TopFrame12,height=22,columns=("ref","fullname","address","cityweighting","basicsalary","overtime","grosspay","tax","pension","nipayment","deductions","postcode","gender","payday","taxperiod","taxcode","ninumber","netpay"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        self.PMS_Table = ttk.Treeview(TopFrame12,height=22,columns=("ref","fullname","address","employername","cityweighting","basicsalary","overtime","grosspay","tax","pension","nipayment","deductions","postcode","gender","payday","taxperiod","taxcode","ninumber","netpay"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
         scroll_x.pack(side=BOTTOM,fill=X)
         scroll_y.pack(side=RIGHT,fill=Y)
         # scroll_x.config(command=self.PMS_Table.xview)
@@ -361,6 +574,7 @@ class PayrollManagementSystem:
         self.PMS_Table.heading("ref",text="Ref")
         self.PMS_Table.heading("fullname",text="Name")
         self.PMS_Table.heading("address",text="Address")
+        self.PMS_Table.heading("employername", text="Employer Name")
         self.PMS_Table.heading("cityweighting",text="City Weighting")
         self.PMS_Table.heading("basicsalary",text="Basic Salary")
         self.PMS_Table.heading("overtime",text="Overtime")
@@ -380,7 +594,8 @@ class PayrollManagementSystem:
         self.PMS_Table['show'] = 'headings'
         self.PMS_Table.column("ref",width=70)
         self.PMS_Table.column("fullname",width=70)
-        self.PMS_Table.column("address",width=120)
+        self.PMS_Table.column("address",width=80)
+        self.PMS_Table.column("employername",width=70)
         self.PMS_Table.column("cityweighting",width=70)
         self.PMS_Table.column("basicsalary",width=70)
         self.PMS_Table.column("overtime",width=70)
@@ -397,7 +612,8 @@ class PayrollManagementSystem:
         self.PMS_Table.column("ninumber",width=70)
         self.PMS_Table.column("netpay",width=70)
         self.PMS_Table.pack(fill=BOTH,expand=1)
-        self.PMS_Table.bind("<ButtonRelease-1>")
+        self.PMS_Table.bind("<ButtonRelease-1>",WagesInfo)
+        DisplayData()
 
 
 #####################################################################################################################################################
