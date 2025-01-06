@@ -364,21 +364,21 @@ class PayrollManagementSystem:
 ########################################Labels########################################
 
         self.lblTitle = Label(TopFrame1,text="\tPayroll Management System\t",font=("Arial",40,"bold"),justify=CENTER)
-        self.lblTitle.grid(padx=76)
+        self.lblTitle.grid(padx=300)
 
         self.lblEmployeeName = Label(TopFrame2,text="Employee Name",font=("Arial",12,"bold"),justify=CENTER)
         self.lblEmployeeName.grid(row=0,column=0,sticky=W)
-        self.txtEmployeeName = Entry(TopFrame2,textvariable=EmployeeName,font=("Arial",12,"bold"),bd=5,width=59,justify=LEFT)
+        self.txtEmployeeName = Entry(TopFrame2,textvariable=EmployeeName,font=("Arial",12,"bold"),bd=5,width=82,justify=LEFT)
         self.txtEmployeeName.grid(row=0,column=1,sticky=W)
 
         self.lblAddress = Label(TopFrame2,text="Address",font=("Arial",12,"bold"),justify=CENTER)
         self.lblAddress.grid(row=1,column=0,sticky=W)
-        self.txtAddress = Entry(TopFrame2,textvariable=Address,font=("Arial",12,"bold"),bd=5,width=59,justify=LEFT)
+        self.txtAddress = Entry(TopFrame2,textvariable=Address,font=("Arial",12,"bold"),bd=5,width=82,justify=LEFT)
         self.txtAddress.grid(row=1,column=1,sticky=W)
 
         self.lblPostCode = Label(TopFrame2,text="Post Code",font=("Arial",12,"bold"),justify=CENTER)
         self.lblPostCode.grid(row=0,column=2,sticky=W)
-        self.txtPostCode = Entry(TopFrame2,textvariable=PostCode,font=("Arial",12,"bold"),bd=5,width=59,justify=LEFT)
+        self.txtPostCode = Entry(TopFrame2,textvariable=PostCode,font=("Arial",12,"bold"),bd=5,width=82,justify=LEFT)
         self.txtPostCode.grid(row=0,column=3,sticky=W)
 
         self.lblGender = Label(TopFrame2,text="Gender",font=("Arial",12,"bold"),justify=CENTER)
