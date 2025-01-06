@@ -42,8 +42,8 @@ ADD
 To Run the Payroll Management System, run the following command:
 
 ```bash
-uv python install 3.12
 uv sync
+source .venv/bin/activate
 uv run main.py
 ```
 
